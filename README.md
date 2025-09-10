@@ -2,7 +2,7 @@
 
 En este proyecto se resuelve la ecuación de onda bidimensional para simular el efecto de la caída de gotas en una superficie de agua. Para ello, se utiliza una discretización de cuarto orden, lo que permite transformar la ecuación diferencial parcial de la que partimos en un sistema algebraico. En términos prácticos, esto implica calcular una matriz que contiene las perturbaciones del fluido en cada punto del dominio, actualizada iterativamente para cada instante de tiempo.
 
-Dado que este tipo de simulaciones puede ser computacionalmente muy exigente, especialmente en dominios de tamaño mediano o grande, se implementan técnicas de paralelización utilizando OpenMP, MPI y OpenACC (CUDA). Se realiza un estudio comparativo del rendimiento mediante el análisis de speedups, tomando como referencia el tiempo de ejecución del código secuencial. En el gif de debajo se muestran los resultados sobre una pequeña parte de la supericie considerada para las simulaciones.
+Dado que este tipo de simulaciones puede ser computacionalmente muy exigente, especialmente en dominios de tamaño mediano o grande, se implementan técnicas de paralelización utilizando OpenMP, MPI y OpenACC (CUDA). Se realiza un estudio comparativo del rendimiento mediante el análisis de speedups, tomando como referencia el tiempo de ejecución del código secuencial. En el GIF de debajo se muestran los resultados sobre una pequeña parte de la supericie considerada para las simulaciones.
 
 ![Simulación](gif-hpc.gif)
 
@@ -63,7 +63,7 @@ mpicc -o paral_mpi paral_mpi.c -lm
 nvcc paral_cuda.c -o paral_cuda
 ```
 
-Todo ello se incluye en el archivo .sh que hemos utilizado para hacer las pruebas. En ellos también se muestra cómo lanzar los ejecutables, pudiendo pasar cuatro parámetros relevantes para la simulación (si no se dan se toman los valores que hemos definido de forma predeterminada):
+Todo ello se incluye en el archivo .sh que hemos utilizado para hacer las pruebas. En ellos también se muestra cómo lanzar los ejecutables, pudiendo pasar cuatro parámetros relevantes para la simulación (si no se dan se toman los valores definidos de forma predeterminada):
 
 - **SIZE**: Tamaño del dominio simulado (número de celdas por lado).
 
@@ -73,11 +73,11 @@ Todo ello se incluye en el archivo .sh que hemos utilizado para hacer las prueba
 
 - **GRID_SIZE**: Lado del área de la "gota".
 
-Los scripts guardan cada cierto número de iteraciones los resultados de la simulación, que nosotros hemos usado para crear el GIF mostrado arriba.
+Los scripts guardan cada cierto número de iteraciones los resultados de la simulación, que se han usado para crear el GIF mostrado arriba.
 
 ## Evaluación de resultados
 
-Los resultados que hemos obtenido para la primera ejecución con un tamaño de 4.000 se muestran en la tabla de debajo:
+Los resultados obtenidos para la primera ejecución con un tamaño de 4.000 se muestran en la tabla de debajo:
 
 | Método  | Procesos/Hilos | Tiempo(s)      | Speedup absoluto | Eficiencia (%) |
 |---------|----------------|----------------|---------|----------------|
@@ -98,7 +98,7 @@ Con base en lo anterior, la siguiente figura muestra una gráfica con los speedu
 
 ![Gráfica](speedup_comparacion_4000.png)
 
-Seguidamente mostramos los resultados obtenidos en la segunda ejecución con un tamaño de 8.000:
+Seguidamente se muestran los resultados obtenidos en la segunda ejecución con un tamaño de 8.000:
 
 | Método  | Procesos/Hilos | Tiempo(s)       | Speedup absoluto | Eficiencia (%) |
 |---------|----------------|------------------|---------|----------------|
@@ -121,7 +121,7 @@ La siguiente figura presenta nuevamente la gráfica de speedups de las versiones
 
 Tras analizar las versiones paralelas con OpenMP y MPI, corresponde examinar los resultados obtenidos con la paralelización mediante GPU. En este caso, el rendimiento logrado con CUDA no ha sido especialmente destacable ni con un tamaño de 4.000 ni con el de 8.000, mejorando menos de un 1% en comparación con sus ejecuciones secuenciales.
 
-Si bien CUDA permite explotar la potencia de cálculo de la GPU, los resultados no muestran mejoras significativas frente a la versión secuencial; en algunos casos, los tiempos de ejecución son incluso similares. Después de un análisis exhaustivo, identificamos las posibles causas de esta situación.
+Si bien CUDA permite explotar la potencia de cálculo de la GPU, los resultados no muestran mejoras significativas frente a la versión secuencial. En algunos casos, los tiempos de ejecución son incluso similares. Después de un análisis exhaustivo, identificamos las posibles causas de esta situación.
 
 El programa realiza numerosos accesos a la memoria de la GPU en cada iteración de la simulación, lo que introduce una penalización significativa debido a la latencia de dichos accesos. Además, la necesidad constante de copiar datos entre la CPU y la GPU contribuye a aumentar aún más el tiempo de ejecución.
 
@@ -129,4 +129,4 @@ Aunque la GPU puede realizar operaciones matriciales con gran eficiencia, existe
 
 ## Conclusiones
 
-En resumen, se logró paralelizar el programa utilizando OpenMP, MPI y CUDA, obteniendo mejoras significativas en el tiempo de ejecución respecto a la versión secuencial. Aunque no se ha alcanzado un speedup lineal, tanto OpenMP como MPI han logrado reducir el tiempo original a menos de la mitad a pesar de las limitaciones mencionadas más arriba. Por otro lado, las limitaciones evidenciadas en la versión basada en GPU nos han ofrecido una perspectiva más realista sobre las restricciones del entorno de ejecución, subrayando que no todas las secciones de un programa son paralelizables y destacando el impacto de esta realidad en el rendimiento global.
+En resumen, se ha logrado paralelizar el programa utilizando OpenMP, MPI y CUDA, obteniendo mejoras significativas en el tiempo de ejecución respecto a la versión secuencial. Aunque no se ha alcanzado un speedup lineal, tanto OpenMP como MPI han logrado reducir el tiempo original a menos de la mitad a pesar de las limitaciones mencionadas más arriba. Por otro lado, las limitaciones evidenciadas en la versión basada en GPU nofrecen una perspectiva más realista sobre las restricciones del entorno de ejecución, subrayando que no todas las secciones de un programa son paralelizables y destacando el impacto de esta realidad en el rendimiento global.
